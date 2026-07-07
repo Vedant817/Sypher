@@ -1,7 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import { ScrollArea } from "./ui/scroll-area";
 
-type ResearchContent = {
+export type ResearchContent = {
   plan?: string[];
   report?: {
     title: string;
