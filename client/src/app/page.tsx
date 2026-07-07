@@ -46,29 +46,37 @@ export default function Home() {
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4 text-indigo-400">
-            Sypher
+            MediClarity
           </h1>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Powered by advanced AI to conduct thorough research on any topic. Get comprehensive,
-            well-structured reports with verified sources and expert analysis.
+            A privacy-first medical report explainer that converts lab reports and health questions into
+            patient-friendly educational summaries, risk flags, and doctor follow-up suggestions.
+          </p>
+        </div>
+
+        <div className="mb-8 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-left text-amber-100">
+          <p className="font-semibold">AI output is educational only and not a diagnosis.</p>
+          <p className="mt-1 text-sm text-amber-200/90">
+            Do not upload real medical reports or personal health information in this prototype.
+            Use synthetic or de-identified examples and confirm all health decisions with a licensed clinician.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 space-y-6">
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h2 className="text-xl font-semibold mb-4 text-gray-200">Start New Research</h2>
+              <h2 className="text-xl font-semibold mb-4 text-gray-200">Explain a Medical Report</h2>
               <form onSubmit={startResearch}>
                 <div className="mb-4">
                   <label htmlFor="topic" className="block text-sm font-medium text-gray-300 mb-1">
-                    Research Topic / Question
+                    Medical report summary or health question
                   </label>
                   <input
                     type="text"
                     id="topic"
                     value={researchTopic}
                     onChange={(e) => setResearchTopic(e.target.value)}
-                    placeholder="Enter a research topic or question"
+                    placeholder="Use synthetic/de-identified details only"
                     className="w-full px-4 py-2 border border-gray-600 rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-gray-700 text-gray-100"
                     disabled={isLoading}
                     required
@@ -82,7 +90,7 @@ export default function Home() {
                     : 'bg-indigo-600 hover:bg-indigo-700'
                     } transition-colors duration-200`}
                 >
-                  {isLoading ? 'Researching...' : 'Start Deep Research'}
+                  {isLoading ? 'Reviewing...' : 'Generate Educational Summary'}
                 </button>
               </form>
             </div>
@@ -93,7 +101,7 @@ export default function Home() {
                   <svg className="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  Research Summary
+                  Summary Request
                 </h2>
                 <p className="text-sm text-gray-400 mb-4">
                   Topic: {researchTopic}
