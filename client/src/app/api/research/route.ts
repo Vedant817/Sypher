@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { vWorkflowId } from "@convex-dev/workflow";
-import { vResultValidator } from "@convex-dev/workpool";
-import { mutation } from "@/../convex/_generated/server"
-import { v } from "convex/values"
-import { workflow } from "@/../convex/index"
+import { mutation } from "@/../convex/_generated/server";
+import { v } from "convex/values";
+import { workflow } from "@/../convex/index";
 import { internal } from "@/../convex/_generated/api";
+
+interface ResearchRouteError extends Error {
+    statusCode?: number;
+}
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
@@ -18,31 +20,22 @@ export async function POST(request: NextRequest) {
         const startResearchWorkflowId = mutation({
             args: { query: v.string() },
             handler: async (ctx, { query }) => {
-                const workflowId = await workflow.start(ctx, internal.workflow.researchWorkflow, { query })
+                const workflowId = await workflow.start(ctx, internal.workflow.researchWorkflow, { query });
                 return workflowId;
             },
         });
 
-        const handleOnComplete = mutation({
-            args: {
-                workflowId: vWorkflowId,
-                result: vResultValidator,
-                context: v.any(),
-            },
-            handler: async (ctx, args) => {
-                console.log("Workflow completed:", args);
-            },
-        })
         return NextResponse.json({ workflowId: startResearchWorkflowId });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error in research agent:", error);
 
-        const errorMessage = error.message || "Failed to decompose query";
-        const statusCode = error.statusCode || 500;
+        const routeError = error instanceof Error ? error as ResearchRouteError : undefined;
+        const errorMessage = routeError?.message || "Failed to decompose query";
+        const statusCode = routeError?.statusCode || 500;
 
         return NextResponse.json({
             error: errorMessage,
-            details: error.name || "Unknown error type"
+            details: routeError?.name || "Unknown error type"
         }, { status: statusCode });
     }
 }
