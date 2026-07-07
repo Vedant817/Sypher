@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useState } from 'react';
-import ResearchResult from '@/components/ResearchResult';
+import ResearchResult, { type ResearchContent } from '@/components/ResearchResult';
 import ResearchProgress from '@/components/ResearchProgress';
 import { Stage } from "@/lib/stages";
 import { toast } from 'react-toastify';
@@ -12,7 +12,7 @@ export default function Home() {
   const [currentStage, setCurrentStage] = useState<Stage.Finalizing | Stage.Researching | Stage.Planning | null>(null);
   const [error, setError] = useState('');
   const [researchTopic, setResearchTopic] = useState('');
-  const [researchResult, setResearchResult] = useState<{ message: string } | null>(null);
+  const [researchResult, setResearchResult] = useState<ResearchContent | null>(null);
 
   const startResearch = async (e: React.FormEvent) => {
     e.preventDefault();
