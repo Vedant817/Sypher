@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sypher
 
-## Getting Started
+Sypher is a citation-first deep research agent. It shows the research plan, searches real web sources, and synthesizes evidence-backed reports instead of acting like a generic chatbot.
 
-First, run the development server:
+## Architecture
+
+The current end-to-end slice is intentionally small and demoable:
+
+1. **Next.js API route** accepts a research topic at `POST /api/research`.
+2. **Convex action/workflow layer** runs the research workflow.
+3. **Planner** uses OpenRouter to produce 3-5 validated subtasks.
+4. **Search tool** calls Tavily and validates each result as `{ title, url, snippet, publishedDate? }`.
+5. **Synthesizer** uses only returned search results to create a validated final report with citations.
+6. **UI** displays the plan, final markdown report, and source links.
+
+## Environment setup
+
+Copy the example file and fill in values:
+
+```bash
+cp .env.example .env.local
+```
+
+Required variables:
+
+```bash
+OPENROUTER_API_KEY=
+CONVEX_DEPLOYMENT=
+NEXT_PUBLIC_CONVEX_URL=
+TAVILY_API_KEY=
+```
+
+`BRAVE_SEARCH_API_KEY` is listed as a future alternative, but the implemented search provider in this slice is Tavily.
+
+## Run commands
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the Next.js app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run Convex locally or against your configured deployment:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npx convex dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Build the application:
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Demo flow
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Start Convex and Next.js.
+2. Open `http://localhost:3000`.
+3. Enter a research question such as “What are the major risks and opportunities for AI agents in financial services?”
+4. Sypher plans subtasks, searches real sources with Tavily, synthesizes a report, and returns citations.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Current limitations
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Research jobs are returned synchronously from the API route; persisted job state and dashboards are still future work.
+- Tavily is the only wired search provider.
+- There is no production-grade request rate limiting yet.
+- Citation verification checks that final citations come from the retrieved URLs, but it does not yet prove every sentence is source-supported.
+- Automated tests for planner output, workflow execution, and report generation are still needed.
+- The default OpenRouter model is configurable, but demo quality depends on the selected model and provider availability.

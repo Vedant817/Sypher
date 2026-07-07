@@ -12,7 +12,7 @@ export default function Home() {
   const [currentStage, setCurrentStage] = useState<Stage.Finalizing | Stage.Researching | Stage.Planning | null>(null);
   const [error, setError] = useState('');
   const [researchTopic, setResearchTopic] = useState('');
-  const [researchResult, setResearchResult] = useState<{ message: string } | null>(null);
+  const [researchResult, setResearchResult] = useState<any | null>(null);
 
   const startResearch = async (e: React.FormEvent) => {
     e.preventDefault();
